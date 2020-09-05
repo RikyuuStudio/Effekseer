@@ -198,9 +198,22 @@ struct VS_Input
 	float3 Tangent		: NORMAL2;
 	float2 UV		: TEXCOORD0;
 	float4 Color		: NORMAL3;
-	uint4 Index		: BLENDINDICES0;
+)"
 
-};
+#if defined(_DIRECTX9)
+R"(
+	float Index : BLENDINDICES0;
+};)"
+
+#elif !defined(DISABLE_INSTANCE)
+
+R"(
+	uint Index : SV_InstanceID;
+};)"
+
+#endif
+
+R"(
 
 struct VS_Output
 {
@@ -272,9 +285,9 @@ static char* model_vs_suf1 = R"(
 
 VS_Output main( const VS_Input Input )
 {
-	float4x4 matModel = mModel[Input.Index.x];
-	float4 uv = fUV[Input.Index.x];
-	float4 modelColor = fModelColor[Input.Index.x] * Input.Color;
+	float4x4 matModel = mModel[Input.Index];
+	float4 uv = fUV[Input.Index];
+	float4 modelColor = fModelColor[Input.Index] * Input.Color;
 
 	VS_Output Output = (VS_Output)0;
 	float4 localPosition = { Input.Pos.x, Input.Pos.y, Input.Pos.z, 1.0 }; 

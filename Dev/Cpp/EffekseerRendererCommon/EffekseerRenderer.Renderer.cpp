@@ -179,7 +179,6 @@ Model::Model(uint8_t* data, int32_t size, int maximumModelCount, Effekseer::Back
 	, InternalModels(nullptr)
 	, ModelCount(0)
 {
-	this->m_vertexSize = sizeof(VertexWithIndex);
 	ES_SAFE_ADDREF(graphicsDevice_);
 
 	ModelCount = Effekseer::Min(Effekseer::Max(GetModelCount(), 1), maximumModelCount);
@@ -197,7 +196,7 @@ bool Model::LoadToGPU()
 	{
 		return false;
 	}
-
+	this->m_vertexSize = sizeof(VertexWithIndex);
 	InternalModels = new Model::InternalModel[GetFrameCount()];
 
 	for (int32_t f = 0; f < GetFrameCount(); f++)

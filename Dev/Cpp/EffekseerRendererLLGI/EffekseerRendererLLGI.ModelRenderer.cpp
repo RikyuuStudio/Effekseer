@@ -57,6 +57,8 @@ ModelRenderer::ModelRenderer(RendererImplemented* renderer,
 		m_shader_distortion_texture->SetVertexConstantBufferSize(sizeof(::EffekseerRenderer::ModelRendererVertexConstantBuffer<1>));
 		m_shader_distortion_texture->SetPixelConstantBufferSize(sizeof(::EffekseerRenderer::ModelRendererDistortionPixelConstantBuffer));
 	}
+
+	VertexType = EffekseerRenderer::ModelRendererVertexType::Instancing;
 }
 
 ModelRenderer::~ModelRenderer()
@@ -176,7 +178,7 @@ void ModelRenderer::EndRendering(const efkModelNodeParam& parameter, void* userD
 		return;
 	}
 
-	model->LoadToGPU();
+	model->LoadToGPUWithoutIndex();
 	if (!model->IsLoadedOnGPU)
 	{
 		return;
