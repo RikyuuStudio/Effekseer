@@ -197,6 +197,9 @@ RendererImplemented::~RendererImplemented()
 	ES_SAFE_DELETE(m_vertexBuffer);
 	ES_SAFE_DELETE(m_indexBuffer);
 	ES_SAFE_DELETE(m_indexBufferForWireframe);
+
+	ES_SAFE_RELEASE(instancedVertexBuffer_);
+	ES_SAFE_RELEASE(graphicsDevice_);
 }
 
 //----------------------------------------------------------------------------------
@@ -431,11 +434,11 @@ bool RendererImplemented::Initialize(LPDIRECT3DDEVICE9 device)
 		D3DDECL_END()};
 
 	m_shader_ad_lighting = Shader::Create(this,
-									   Standard_Lighting_VS_Ad::g_vs30_main,
+										  Standard_Lighting_VS_Ad::g_vs30_main,
 										  sizeof(Standard_Lighting_VS_Ad::g_vs30_main),
 										  Standard_Lighting_PS_Ad::g_ps30_main,
 										  sizeof(Standard_Lighting_PS_Ad::g_ps30_main),
-									   "StandardRenderer Lighting",
+										  "StandardRenderer Lighting",
 										  decl_lighting,
 										  false);
 	if (m_shader_ad_lighting == NULL)
@@ -464,6 +467,15 @@ bool RendererImplemented::Initialize(LPDIRECT3DDEVICE9 device)
 	GetImpl()->CreateProxyTextures(this);
 
 	// ES_SAFE_ADDREF( m_d3d_device );
+
+	std::array<float, 64> instancedVertex;
+	for (size_t i = 0; i < instancedVertex.size(); i++)
+	{
+		instancedVertex[i] = static_cast<float>(i);
+	}
+
+	graphicsDevice_ = new Backend::GraphicsDevice(device);
+	instancedVertexBuffer_ = graphicsDevice_->CreateVertexBuffer(instancedVertex.size() * sizeof(float), instancedVertex.data(), false);
 	return true;
 }
 
@@ -868,6 +880,18 @@ void RendererImplemented::DrawPolygon(int32_t vertexCount, int32_t indexCount)
 {
 	impl->drawcallCount++;
 	impl->drawvertexCount += vertexCount;
+
+	GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, vertexCount, 0, indexCount / 3);
+}
+
+void RendererImplemented::DrawPolygonInstanced(int32_t vertexCount, int32_t indexCount, int32_t instanceCount)
+{
+	impl->drawcallCount++;
+	impl->drawvertexCount += vertexCount * instanceCount;
+
+	GetDevice()->SetStreamSource(1, instancedVertexBuffer_->GetBuffer(), 0, sizeof(float));
+	GetDevice()->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | instanceCount);
+	GetDevice()->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1);
 
 	GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, vertexCount, 0, indexCount / 3);
 }

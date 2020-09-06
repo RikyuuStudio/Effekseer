@@ -9,12 +9,8 @@
 #include "../../EffekseerRendererCommon/EffekseerRenderer.StandardRenderer.h"
 #include "EffekseerRendererDX9.Base.h"
 #include "EffekseerRendererDX9.Renderer.h"
-
+#include "GraphicsDevice.h"
 #include <array>
-
-#ifdef _MSC_VER
-#include <xmmintrin.h>
-#endif
 
 namespace EffekseerRendererDX9
 {
@@ -112,6 +108,9 @@ private:
 	bool m_isChangedDevice;
 
 	bool m_restorationOfStates;
+
+	Backend::GraphicsDevice* graphicsDevice_ = nullptr;
+	Backend::VertexBuffer* instancedVertexBuffer_ = nullptr;
 
 	EffekseerRenderer::DistortingCallback* m_distortingCallback;
 
@@ -242,14 +241,12 @@ public:
 	void SetIndexBuffer(IDirect3DIndexBuffer9* indexBuffer);
 
 	void SetVertexBuffer(Effekseer::Backend::VertexBuffer* vertexBuffer, int32_t size);
-	void SetIndexBuffer(Effekseer::Backend::IndexBuffer* indexBuffer);	
+	void SetIndexBuffer(Effekseer::Backend::IndexBuffer* indexBuffer);
 
 	void SetLayout(Shader* shader);
 	void DrawSprites(int32_t spriteCount, int32_t vertexOffset);
 	void DrawPolygon(int32_t vertexCount, int32_t indexCount);
-	void DrawPolygonInstanced(int32_t vertexCount, int32_t indexCount, int32_t instanceCount)
-	{
-	}
+	void DrawPolygonInstanced(int32_t vertexCount, int32_t indexCount, int32_t instanceCount);
 
 	Shader* GetShader(::EffekseerRenderer::StandardRendererShaderType type) const;
 	void BeginShader(Shader* shader);
