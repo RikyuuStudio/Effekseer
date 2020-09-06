@@ -43,12 +43,7 @@ struct ShaderUniformInfo
 enum eConstantType
 {
 	CONSTANT_TYPE_MATRIX44 = 0,
-	CONSTANT_TYPE_MATRIX44_ARRAY = 10,
-	CONSTANT_TYPE_MATRIX44_ARRAY_END = 99,
-
 	CONSTANT_TYPE_VECTOR4 = 100,
-	CONSTANT_TYPE_VECTOR4_ARRAY = 110,
-	CONSTANT_TYPE_VECTOR4_ARRAY_END = 199,
 };
 
 //----------------------------------------------------------------------------------
@@ -108,6 +103,7 @@ private:
 		eConstantType Type;
 		GLint ID;
 		int32_t Offset;
+		int32_t Count;
 	};
 
 	OpenGLDeviceType m_deviceType;
@@ -204,8 +200,8 @@ public:
 		return m_pixelConstantBuffer;
 	}
 
-	void AddVertexConstantLayout(eConstantType type, GLint id, int32_t offset);
-	void AddPixelConstantLayout(eConstantType type, GLint id, int32_t offset);
+	void AddVertexConstantLayout(eConstantType type, GLint id, int32_t offset, int32_t count = 1);
+	void AddPixelConstantLayout(eConstantType type, GLint id, int32_t offset, int32_t count = 1);
 
 	void SetConstantBuffer() override;
 

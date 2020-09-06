@@ -211,11 +211,6 @@ namespace EffekseerRendererGL
 			{"a_Tangent", GL_FLOAT, 3, 36, false},
 			{"a_TexCoord", GL_FLOAT, 2, 48, false},
 			{"a_Color", GL_UNSIGNED_BYTE, 4, 56, true},
-#if defined(MODEL_SOFTWARE_INSTANCING)
-			{"a_InstanceID", GL_FLOAT, 1, 0, false},
-			{"a_UVOffset", GL_FLOAT, 4, 0, false},
-			{"a_ModelColor", GL_FLOAT, 4, 0, false},
-#endif
 		};
 
 		shader->GetAttribIdList(NumAttribs, g_model_attribs);
