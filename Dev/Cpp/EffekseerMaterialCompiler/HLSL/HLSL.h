@@ -264,13 +264,13 @@ float4 cameraPosition : register(c66);
 #else
 R"(
 float4x4 mCameraProj		: register( c0 );
-float4x4 mModel[1]		: register( c4 );
-float4	fUV[1]			: register( c8 );
-float4	fModelColor[1]		: register( c9 );
+float4x4 mModel[10]		: register( c4 );
+float4	fUV[10]			: register( c44 );
+float4	fModelColor[10]		: register( c54 );
 
-float4 mUVInversed		: register(c10);
-float4 predefined_uniform : register(c11);
-float4 cameraPosition : register(c12);
+float4 mUVInversed		: register(c64);
+float4 predefined_uniform : register(c65);
+float4 cameraPosition : register(c66);
 
 )"
 #endif
