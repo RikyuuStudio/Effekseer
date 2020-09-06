@@ -13,8 +13,14 @@
 namespace EffekseerRendererGL
 {
 
+static const int InstanceCount = 10;
+
 ::Effekseer::MaterialData* MaterialLoader::LoadAcutually(::Effekseer::Material& material, ::Effekseer::CompiledMaterialBinary* binary)
 {
+	auto deviceType = graphicsDevice_->GetDeviceType();
+
+	auto instancing = deviceType == OpenGLDeviceType::OpenGL3 || deviceType == OpenGLDeviceType::OpenGLES3;
+
 	auto materialData = new ::Effekseer::MaterialData();
 	materialData->IsSimpleVertex = material.GetIsSimpleVertex();
 	materialData->IsRefractionRequired = material.GetHasRefraction();
@@ -185,7 +191,7 @@ namespace EffekseerRendererGL
 
 	for (int32_t st = 0; st < shaderTypeCount; st++)
 	{
-		auto parameterGenerator = EffekseerRenderer::MaterialShaderParameterGenerator(material, true, st, 1);
+		auto parameterGenerator = EffekseerRenderer::MaterialShaderParameterGenerator(material, true, st, instancing ? InstanceCount : 1);
 
 		ShaderCodeView vs((const char*)binary->GetVertexShaderData(shaderTypesModel[st]));
 		ShaderCodeView ps((const char*)binary->GetPixelShaderData(shaderTypesModel[st]));
