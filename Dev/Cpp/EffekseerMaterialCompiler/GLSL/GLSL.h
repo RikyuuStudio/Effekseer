@@ -62,14 +62,6 @@ LAYOUT(3) IN vec3 a_Tangent;
 LAYOUT(4) IN vec2 a_TexCoord;
 LAYOUT(5) IN vec4 a_Color;
 )"
-#if defined(MODEL_SOFTWARE_INSTANCING)
-	R"(
-IN float a_InstanceID;
-IN vec4 a_UVOffset;
-IN vec4 a_ModelColor;
-)"
-#endif
-
 	R"(
 
 LAYOUT(0) OUT lowp vec4 v_VColor;
@@ -89,11 +81,11 @@ static const char g_material_model_vs_src_pre_uniform[] =
 	R"(
 uniform mat4 ProjectionMatrix;
 )"
-#if defined(MODEL_SOFTWARE_INSTANCING)
+#if defined(MODEL_INSTANCING)
 	R"(
-uniform mat4 ModelMatrix[20];
-uniform vec4 UVOffset[20];
-uniform vec4 ModelColor[20];
+uniform mat4 ModelMatrix[10];
+uniform vec4 UVOffset[10];
+uniform vec4 ModelColor[10];
 )"
 #else
 	R"(
@@ -127,11 +119,11 @@ vec2 GetUVBack(vec2 uv)
 void main()
 {
 )"
-#if defined(MODEL_SOFTWARE_INSTANCING)
+#if defined(MODEL_INSTANCING)
 	R"(
-	mat4 modelMatrix = ModelMatrix[int(a_InstanceID)];
-	vec4 uvOffset = a_UVOffset;
-	vec4 modelColor = a_ModelColor;
+	mat4 modelMatrix = ModelMatrix[int(gl_InstanceID)];
+	vec4 uvOffset = UVOffset[int(gl_InstanceID)];
+	vec4 modelColor = ModelColor[int(gl_InstanceID)] * a_Color;
 )"
 #else
 	R"(
@@ -782,7 +774,7 @@ public:
 							  bool is450,
 							  bool useSet,
 							  int textureBindingOffset,
-							  bool isYInverted = false)
+							  bool isYInverted)
 	{
 		useUniformBlock_ = useUniformBlock;
 		useSet_ = useSet;

@@ -3,6 +3,7 @@
 
 #include "../3rdParty/LLGI/src/Vulkan/LLGI.CompilerVulkan.h"
 
+#define MODEL_INSTANCING 1
 #include "../EffekseerMaterialCompiler/GLSL/GLSL.h"
 
 #undef min
